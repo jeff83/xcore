@@ -54,7 +54,7 @@ public class ModelFieldBean {
      */
 	private ModelFieldType type;
 
-    private int length;
+    private Integer length;
 
 	@JsonRawValue
 	private Object defaultValue;
@@ -234,11 +234,11 @@ public class ModelFieldBean {
 		this.convert = convert;
 	}
 
-    public int getLength() {
+    public Integer getLength() {
         return length;
     }
 
-    public void setLength(int length) {
+    public void setLength(Integer length) {
         this.length = length;
     }
 

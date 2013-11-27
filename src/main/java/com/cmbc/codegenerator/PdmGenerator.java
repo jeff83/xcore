@@ -1,4 +1,5 @@
 package com.cmbc.codegenerator;
+
 import com.cmbc.codegenerator.model.ModelBean;
 import com.cmbc.codegenerator.model.ModelFieldBean;
 import com.cmbc.codegenerator.model.ModelFieldType;
@@ -8,9 +9,8 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+
 /**
  * Created with IntelliJ IDEA.
  * User: jeff
@@ -20,9 +20,8 @@ import java.util.List;
  */
 public class PdmGenerator {
 
-    public ModelBean[] parsePDM_VO(String filePath) {
-        ModelBean[] tabs = new ModelBean[] {};
-        List<ModelBean> modelBeans = new ArrayList<ModelBean>();
+    public Map<String,ModelBean> parsePDM(String filePath) {
+        Map<String,ModelBean> modelBeansMap = new HashMap<String,ModelBean>();
         ModelBean modelBean = null;
         ModelFieldBean[] fieldBeans = null;
         File f = new File(filePath);
@@ -44,10 +43,11 @@ public class PdmGenerator {
             modelBean.setTableName(e_table.elementTextTrim("Code"));
             Iterator itr1 = e_table.element("Columns").elements("Column").iterator();
             while (itr1.hasNext()) {
+                col = new ModelFieldBean();
+                Element e_col = (Element) itr1.next();
                 try {
 
-                    col = new ModelFieldBean();
-                    Element e_col = (Element) itr1.next();
+
                     String pkID = e_col.attributeValue("Id");
                     col.setDefaultValue(e_col.elementTextTrim("DefaultValue"));
                     col.setName(e_col.elementTextTrim("Name"));
@@ -72,24 +72,25 @@ public class PdmGenerator {
                     list.add(col);
                     System.out.println(col);
                 } catch (Exception ex) {
-                    // col.setType(e_col.elementTextTrim("DataType"));
                     System.out.println("+++++++++有错误++++" );
                     ex.printStackTrace();
                 }
             }
             modelBean.addFields(list);
-            modelBeans.add(modelBean);
+            modelBeansMap.put(modelBean.getTableName(), modelBean);
             System.out.println(modelBean);
             System.out.println("======================");
             System.out.println();
         }
-        return modelBeans.toArray(tabs);
+        return modelBeansMap;
     }
 
     public static void main(String[] args) {
         PdmGenerator pp = new PdmGenerator();
-        ModelBean[] tab = pp.parsePDM_VO("D:\\workspace\\param.pdm");
-        pp.show(tab);
+        Map<String,ModelBean> modelBeanMap = pp.parsePDM("D:\\workspace\\param.pdm");
+        ModelBean modelBean = modelBeanMap.get("");
+
+
     }
 
     public void show(ModelBean[] tabs) {
