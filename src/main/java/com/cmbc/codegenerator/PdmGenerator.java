@@ -4,9 +4,6 @@ import com.cmbc.codegenerator.model.ModelFieldBean;
 import com.cmbc.codegenerator.model.ModelFieldType;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
-import org.dom4j.io.SAXReader;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
@@ -91,7 +88,7 @@ public class PdmGenerator {
 
     public static void main(String[] args) {
         PdmGenerator pp = new PdmGenerator();
-        ModelBean[] tab = pp.parsePDM_VO("D:\\workspace\\workspace-sts\\CC\\doc\\CC4.pdm");
+        ModelBean[] tab = pp.parsePDM_VO("D:\\workspace\\param.pdm");
         pp.show(tab);
     }
 
