@@ -15,23 +15,27 @@
  */
 package com.cmbc.codegenerator.model;
 
+import ch.ralscha.extdirectspring.bean.ExtDirectStoreResult;
+import ch.ralscha.extdirectspring.generator.association.AbstractAssociation;
+import ch.ralscha.extdirectspring.generator.validation.AbstractValidation;
+import org.springframework.util.Assert;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.util.Assert;
-
-import ch.ralscha.extdirectspring.bean.ExtDirectStoreResult;
-import ch.ralscha.extdirectspring.generator.association.AbstractAssociation;
-import ch.ralscha.extdirectspring.generator.validation.AbstractValidation;
 
 /**
  * Represents a model. This object can be used to create JS code with
  */
 public class ModelBean {
 
+    /**
+     * 类名
+     */
     private String className;
+
+    private String lowerClassName;
 
     /**
      * 中文字段名
@@ -80,6 +84,10 @@ public class ModelBean {
 	public String getIdProperty() {
 		return idProperty;
 	}
+
+    public String getLowerClassName(){
+        return className.substring(0,1).toLowerCase().concat(className.substring(1));
+    }
 
 	/**
 	 * Name of the id property. See <a href=

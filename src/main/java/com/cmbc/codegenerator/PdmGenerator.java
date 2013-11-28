@@ -3,6 +3,7 @@ package com.cmbc.codegenerator;
 import com.cmbc.codegenerator.model.ModelBean;
 import com.cmbc.codegenerator.model.ModelFieldBean;
 import com.cmbc.codegenerator.model.ModelFieldType;
+import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -87,20 +88,24 @@ public class PdmGenerator {
 
     public static void main(String[] args) {
         PdmGenerator pp = new PdmGenerator();
-        Map<String,ModelBean> modelBeanMap = pp.parsePDM("D:\\workspace\\param.pdm");
-        ModelBean modelBean = modelBeanMap.get("");
-
-
-    }
-
-    public void show(ModelBean[] tabs) {
-        List<String> list = new ArrayList<String>();
-        for (ModelBean tab : tabs) {
-            list.add(tab.getTableName());
-            System.out.println(tab.getTableName());
+        Map<String,ModelBean> modelBeanMap = pp.parsePDM(Config.getInstance().getPdmFilePath());
+        String tableName = Config.getInstance().getTableNameForGen();
+        List<ModelBean> modelBeans = new ArrayList<>();
+        if(StringUtils.isNotBlank(tableName)){
+            modelBeans.add(modelBeanMap.get(tableName));
+        }else {
+            modelBeans.addAll(modelBeanMap.values());
         }
-//      for (int i = 0; i < list.size(); i++) {
-//          System.out.println(list.get(i));
-//      }
+        for(ModelBean modelBean:modelBeans){
+            pp.render(modelBean);
+        }
+
     }
+    public void render(ModelBean modelBean){
+        List<TemplateConfig> templateConfigs = Config.getInstance().getTemplateConfigs();
+        for (TemplateConfig templateConfig:templateConfigs){
+
+        }
+    }
+
 }
