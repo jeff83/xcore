@@ -39,7 +39,7 @@ import com.mysema.query.jpa.impl.JPAQuery;
 @Service
 @Lazy
 @PreAuthorize("hasRole('ADMIN')")
-public class UserService extends BaseCRUDService<${className}> {
+public class UserService extends BaseCRUDService<${model.className}> {
 
     @Autowired
     private MessageSource messageSource;
@@ -47,7 +47,7 @@ public class UserService extends BaseCRUDService<${className}> {
     @Override
     @ExtDirectMethod(STORE_READ)
     @Transactional(readOnly = true)
-    public ExtDirectStoreResult<${className}> read(ExtDirectStoreReadRequest request) {
+    public ExtDirectStoreResult<${model.className}> read(ExtDirectStoreReadRequest request) {
 
         JPQLQuery query = new JPAQuery(entityManager).from(QUser.user);
         if (!request.getFilters().isEmpty()) {
@@ -63,7 +63,7 @@ public class UserService extends BaseCRUDService<${className}> {
         }
 
         QueryUtil.addPagingAndSorting(query, request, User.class, QUser.user);
-        SearchResults<User> searchResult = query.listResults(QUser.user);
+        SearchResults<${model.className}> searchResult = query.listResults(QUser.user);
 
             return new ExtDirectStoreResult<>(searchResult.getTotal(), searchResult.getResults());
             }

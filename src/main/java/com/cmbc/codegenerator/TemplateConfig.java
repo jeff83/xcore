@@ -8,24 +8,36 @@ package com.cmbc.codegenerator;
  * To change this template use File | Settings | File Templates.
  */
 public class TemplateConfig {
+    /**
+     * 模板文件名
+     */
     private String  templateFile;
-    private String fileNameTmpl;
-    private String outpathTmpl ;
-    private String basePath;
+    /**
+     * 目标文件名模板
+     */
+    private String targetFileNameTemplateStr;
+    /**
+     * 目标文件名目录模板
+     */
+    private String targetFileDirTemplateStr;
+    /**
+     * 目标文件名基础目录
+     */
+    private String targetFileBasePath;
 
-    public TemplateConfig(String  templateFile,String basePath,String outpathTmpl,String fileNameTmpl){
+    public TemplateConfig(String  templateFile,String targetFileBasePath,String targetFileDirTemplateStr,String targetFileNameTemplateStr){
         this.setTemplateFile(templateFile);
-        this.setBasePath(basePath);
-        this.setOutpathTmpl(outpathTmpl);
-        this.setFileNameTmpl(fileNameTmpl);
+        this.setTargetFileBasePath(targetFileBasePath);
+        this.setTargetFileDirTemplateStr(targetFileDirTemplateStr);
+        this.setTargetFileNameTemplateStr(targetFileNameTemplateStr);
     }
 
-    public String getBasePath() {
-        return basePath;
+    public String getTargetFileBasePath() {
+        return targetFileBasePath;
     }
 
-    public void setBasePath(String basePath) {
-        this.basePath = basePath;
+    public void setTargetFileBasePath(String targetFileBasePath) {
+        this.targetFileBasePath = targetFileBasePath;
     }
 
     public String getTemplateFile() {
@@ -36,19 +48,19 @@ public class TemplateConfig {
         this.templateFile = templateFile;
     }
 
-    public String getFileNameTmpl() {
-        return fileNameTmpl;
+    public String getTargetFileNameTemplateStr() {
+        return targetFileNameTemplateStr;
     }
 
-    public void setFileNameTmpl(String fileNameTmpl) {
-        this.fileNameTmpl = fileNameTmpl;
+    public void setTargetFileNameTemplateStr(String targetFileNameTemplateStr) {
+        this.targetFileNameTemplateStr = targetFileNameTemplateStr;
     }
 
-    public String getOutpathTmpl() {
-        return outpathTmpl;
+    public String getTargetFileDirTemplateStr() {
+        return targetFileDirTemplateStr;
     }
 
-    public void setOutpathTmpl(String outpathTmpl) {
-        this.outpathTmpl = outpathTmpl;
+    public void setTargetFileDirTemplateStr(String targetFileDirTemplateStr) {
+        this.targetFileDirTemplateStr = targetFileDirTemplateStr;
     }
 }

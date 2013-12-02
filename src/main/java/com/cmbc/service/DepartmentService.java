@@ -42,7 +42,6 @@ public class DepartmentService extends BaseCRUDService<Department> {
 	@Autowired
 	private MessageSource messageSource;
 
-
     @Override
 	@ExtDirectMethod(STORE_READ)
 	@Transactional(readOnly = true)

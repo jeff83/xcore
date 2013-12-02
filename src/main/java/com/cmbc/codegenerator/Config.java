@@ -1,5 +1,7 @@
 package com.cmbc.codegenerator;
 
+import freemarker.template.Configuration;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,20 +29,31 @@ public class Config {
 
     private String templatePath = "";
 
+    private Configuration freemarkerCfg = null;
+
     public static Config getInstance(){
         if(instance==null){
             instance=new Config();
             instance.setPdmFilePath("D:\\workspace\\param.pdm");
             instance.setProjectName("xcore");
             instance.setTableNameForGen("");
-            instance.setTemplatePath(Config.class.getClassLoader().getResource("com.cmbc.codegenerator.template").getPath());
+            // Initialize the FreeMarker configuration;
+            // - Create a configuration instance
+            instance.setFreemarkerCfg(new Configuration());
+            // - FreeMarker支持多种模板装载方式,可以查看API文档,都很简单:路径,根据Servlet上下文,classpath等等
+            try {
+                instance.getFreemarkerCfg().setClassForTemplateLoading(Config.class, "/template");
+                //freemarker_cfg.setDirectoryForTemplateLoading(new File(Config.getInstance().getTemplatePath()));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
             String jsBasePath = "D:\\workspace\\eds\\xcore\\src\\main\\webapp\\app\\";
             String javaBasePath = "D:\\workspace\\eds\\xcore\\src\\main\\java\\";
-            instance.getTemplateConfigs().add(new TemplateConfig("controller.js.ftl",jsBasePath,"controller\\","${className}.js"));
-            instance.getTemplateConfigs().add(new TemplateConfig("Edit.js.ftl",jsBasePath,"view\\${lowerClassName}\\","Edit.js"));
-            instance.getTemplateConfigs().add(new TemplateConfig("List.js.ftl",jsBasePath,"view\\${lowerClassName}\\","List.js"));
-            instance.getTemplateConfigs().add(new TemplateConfig("store.js.ftl",jsBasePath,"store\\","${className}s.js"));
-            instance.getTemplateConfigs().add(new TemplateConfig("service.java.ftl",javaBasePath,"com\\cmbc\\service\\","${className}Service.java"));
+//            instance.getTemplateConfigs().add(new TemplateConfig("controller.js.ftl",jsBasePath,"controller\\","${className}.js"));
+//            instance.getTemplateConfigs().add(new TemplateConfig("Edit.js.ftl",jsBasePath,"view\\${lowerClassName}\\","Edit.js"));
+//            instance.getTemplateConfigs().add(new TemplateConfig("List.js.ftl",jsBasePath,"view\\${lowerClassName}\\","List.js"));
+//            instance.getTemplateConfigs().add(new TemplateConfig("store.js.ftl",jsBasePath,"store\\","${className}s.js"));
+            instance.getTemplateConfigs().add(new TemplateConfig("service.java.ftl",javaBasePath,"com\\cmbc\\service\\","${model.className}Service.java"));
         }
         return instance;
     }
@@ -89,5 +102,13 @@ public class Config {
 
     public void setTableNameForGen(String tableNameForGen) {
         TableNameForGen = tableNameForGen;
+    }
+
+    public Configuration getFreemarkerCfg() {
+        return freemarkerCfg;
+    }
+
+    public void setFreemarkerCfg(Configuration freemarkerCfg) {
+        this.freemarkerCfg = freemarkerCfg;
     }
 }
