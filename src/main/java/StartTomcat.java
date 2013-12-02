@@ -19,6 +19,7 @@ public class StartTomcat {
 		// Comment out the following line to activate production profile
 		System.setProperty("spring.profiles.active", "development");
 
+        //java程序的当前目录如何确定?,项目目录？ working dictionary
 		EmbeddedTomcat.create().skipJarsDefaultJarScanner(skipJars).setContextFile("./src/main/config/tomcat.xml")
 				.startAndWait();
 	}

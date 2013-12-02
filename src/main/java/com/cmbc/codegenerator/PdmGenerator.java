@@ -75,8 +75,6 @@ public class PdmGenerator {
                     list.add(col);
                     System.out.println(col);
                 } catch (Exception ex) {
-                    // col.setType(e_col.elementTextTrim("DataType"));
-                    System.out.println("+++++++++有错误++++" );
                     ex.printStackTrace();
                 }
             }
@@ -101,6 +99,7 @@ public class PdmGenerator {
             list.add(tab.getTableName());
             System.out.println(tab.getTableName());
         }
+
 //      for (int i = 0; i < list.size(); i++) {
 //          System.out.println(list.get(i));
 //      }

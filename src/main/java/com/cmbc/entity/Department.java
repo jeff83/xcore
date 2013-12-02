@@ -21,6 +21,7 @@ public class Department extends AbstractPersistable {
     @NotEmpty(message = "{user_missing_username}")
     @Size(max = 100)
     @Column()
+
     private String name;
 
     public String getCode() {

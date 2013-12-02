@@ -31,6 +31,11 @@ public class DataConfig {
 		return (DataSource) ctx.lookup("java:comp/env/jdbc/xcore");
 	}
 
+    /**
+     * jpa的实现组件（hibernate的配置）
+     * @return
+     * @throws NamingException
+     */
 	@Bean
 	@DependsOn("liquibaseBean")
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() throws NamingException {
@@ -39,6 +44,7 @@ public class DataConfig {
 		HibernateJpaVendorAdapter hibernateJpaVendorAdapter = new HibernateJpaVendorAdapter();
 		// hibernateJpaVendorAdapter.setShowSql(true);
 		emf.setJpaVendorAdapter(hibernateJpaVendorAdapter);
+        //扫描的包名
 		emf.setPackagesToScan("com.cmbc.entity");
 		return emf;
 	}
