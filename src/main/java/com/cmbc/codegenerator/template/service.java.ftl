@@ -1,4 +1,3 @@
-package com.cmbc.service;
 
 import static ch.ralscha.extdirectspring.annotation.ExtDirectMethodType.STORE_READ;
 

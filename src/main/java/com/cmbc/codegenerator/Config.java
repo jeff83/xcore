@@ -34,7 +34,7 @@ public class Config {
     public static Config getInstance(){
         if(instance==null){
             instance=new Config();
-            instance.setPdmFilePath("D:\\workspace\\param.pdm");
+            instance.setPdmFilePath("./doc/test.pdm");
             instance.setProjectName("xcore");
             instance.setTableNameForGen("");
             // Initialize the FreeMarker configuration;
@@ -42,18 +42,20 @@ public class Config {
             instance.setFreemarkerCfg(new Configuration());
             // - FreeMarker支持多种模板装载方式,可以查看API文档,都很简单:路径,根据Servlet上下文,classpath等等
             try {
-                instance.getFreemarkerCfg().setClassForTemplateLoading(Config.class, "/template");
+                instance.getFreemarkerCfg().setClassForTemplateLoading(Config.class, "/com/cmbc/codegenerator/template");
+                instance.getFreemarkerCfg().setLocalizedLookup(false);//禁止本地化模板文件查找,否则需要将文件名+ZH_CN之类的本地化后缀
+
                 //freemarker_cfg.setDirectoryForTemplateLoading(new File(Config.getInstance().getTemplatePath()));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            String jsBasePath = "D:\\workspace\\eds\\xcore\\src\\main\\webapp\\app\\";
-            String javaBasePath = "D:\\workspace\\eds\\xcore\\src\\main\\java\\";
-//            instance.getTemplateConfigs().add(new TemplateConfig("controller.js.ftl",jsBasePath,"controller\\","${className}.js"));
-//            instance.getTemplateConfigs().add(new TemplateConfig("Edit.js.ftl",jsBasePath,"view\\${lowerClassName}\\","Edit.js"));
-//            instance.getTemplateConfigs().add(new TemplateConfig("List.js.ftl",jsBasePath,"view\\${lowerClassName}\\","List.js"));
-//            instance.getTemplateConfigs().add(new TemplateConfig("store.js.ftl",jsBasePath,"store\\","${className}s.js"));
-            instance.getTemplateConfigs().add(new TemplateConfig("service.java.ftl",javaBasePath,"com\\cmbc\\service\\","${model.className}Service.java"));
+            String jsBasePath = "./src/main/webapp/app/";
+            String javaBasePath = "./src/main/java/";
+//            instance.getTemplateConfigs().add(new TemplateConfig("controller.js.ftl",jsBasePath,"controller/","${className}.js"));
+//            instance.getTemplateConfigs().add(new TemplateConfig("Edit.js.ftl",jsBasePath,"view/${lowerClassName}/","Edit.js"));
+//            instance.getTemplateConfigs().add(new TemplateConfig("List.js.ftl",jsBasePath,"view/${lowerClassName}/","List.js"));
+//            instance.getTemplateConfigs().add(new TemplateConfig("store.js.ftl",jsBasePath,"store/","${className}s.js"));
+            instance.getTemplateConfigs().add(new TemplateConfig("service.java.ftl",javaBasePath,"com/cmbc/service/","${model.className}Service.java"));
         }
         return instance;
     }

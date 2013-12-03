@@ -16,6 +16,7 @@ import org.dom4j.io.SAXReader;
 
 
 import java.io.*;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -95,6 +96,7 @@ public class PdmGenerator {
     }
 
     public static void main(String[] args) throws GeneratorException {
+
         PdmGenerator pp = new PdmGenerator();
         Map<String,ModelBean> modelBeanMap = pp.parsePDM(Config.getInstance().getPdmFilePath());
         String tableName = Config.getInstance().getTableNameForGen();

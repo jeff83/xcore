@@ -405,6 +405,7 @@
 				<directory>src/main/java</directory>
 				<includes>
 					<include>**/*.xml</include>
+                    <include>**/*.ftl</include><!-- jeff,将freemaker文件编译到目的目录-->
 				</includes>
 			</resource>
 
