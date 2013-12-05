@@ -31,9 +31,13 @@ import java.util.Map;
 public class ModelBean {
 
     /**
-     * 类名
+     * 实体类名
      */
     private String className;
+    /**
+     * 实体类包名
+     */
+    private String packageName;
 
     private String lowerClassName;
 

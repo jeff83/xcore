@@ -7,8 +7,11 @@ package com.cmbc.codegenerator;
  * Time: 下午3:36
  * To change this template use File | Settings | File Templates.
  */
-public class GeneratorException extends Exception{
+public class GeneratorException extends RuntimeException{
     public GeneratorException(Exception e) {
         super(e);
+    }
+    public GeneratorException(String msg) {
+        super(msg);
     }
 }

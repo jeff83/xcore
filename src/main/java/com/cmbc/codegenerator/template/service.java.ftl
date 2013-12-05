@@ -1,4 +1,4 @@
-
+package com.cmbc.service;
 import static ch.ralscha.extdirectspring.annotation.ExtDirectMethodType.STORE_READ;
 
 import java.util.List;
@@ -38,7 +38,7 @@ import com.mysema.query.jpa.impl.JPAQuery;
 @Service
 @Lazy
 @PreAuthorize("hasRole('ADMIN')")
-public class UserService extends BaseCRUDService<${model.className}> {
+public class ${model.className}Service extends BaseCRUDService<${model.className}> {
 
     @Autowired
     private MessageSource messageSource;
@@ -53,10 +53,10 @@ public class UserService extends BaseCRUDService<${model.className}> {
         StringFilter filter = (StringFilter) request.getFilters().iterator().next();
 
         BooleanBuilder bb = new BooleanBuilder();
-        bb.or(QUser.user.userName.contains(filter.getValue()));
-        bb.or(QUser.user.name.contains(filter.getValue()));
-        bb.or(QUser.user.firstName.contains(filter.getValue()));
-        bb.or(QUser.user.email.contains(filter.getValue()));
+        bb.or(Q${model.className}.user.userName.contains(filter.getValue()));
+        bb.or(Q${model.className}.user.name.contains(filter.getValue()));
+        bb.or(Q${model.className}.user.firstName.contains(filter.getValue()));
+        bb.or(Q${model.className}.user.email.contains(filter.getValue()));
 
         query.where(bb);
         }
@@ -70,7 +70,7 @@ public class UserService extends BaseCRUDService<${model.className}> {
             @ExtDirectMethod
             @Transactional
             @PreAuthorize("isAuthenticated()")
-            public ExtDirectStoreValidationResult<User> updateSettings(User modifiedUser, Locale locale) {
+            public ExtDirectStoreValidationResult<User> updateSettings(${model.className} modifiedUser, Locale locale) {
 
                 List<ValidationError> validations = Lists.newArrayList();
                     User dbUser = null;

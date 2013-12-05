@@ -18,8 +18,10 @@
       <sourceFolder url="file://$MODULE_DIR$/target/generated-sources/java" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target/classes" />
       <excludeFolder url="file://$MODULE_DIR$/target/jslint4java" />
+      <excludeFolder url="file://$MODULE_DIR$/target/maven-archiver" />
       <excludeFolder url="file://$MODULE_DIR$/target/maven-status" />
       <excludeFolder url="file://$MODULE_DIR$/target/tomcat.8080" />
+      <excludeFolder url="file://$MODULE_DIR$/target/xcore-0.0.1" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
