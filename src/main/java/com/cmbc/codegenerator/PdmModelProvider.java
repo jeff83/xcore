@@ -1,12 +1,8 @@
 package com.cmbc.codegenerator;
 
-import com.cmbc.codegenerator.freemarker.FreemarkerHelper;
 import com.cmbc.codegenerator.model.ModelBean;
 import com.cmbc.codegenerator.model.ModelFieldBean;
 import com.cmbc.codegenerator.model.ModelFieldType;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
@@ -73,7 +69,7 @@ public class PdmModelProvider implements ModelProvider{
             List<ModelFieldBean> list = new ArrayList<ModelFieldBean>();
             ModelFieldBean col = null;
             Element e_table = (Element) itr.next();
-            modelBean.setName(e_table.elementTextTrim("Name"));
+            modelBean.setLabel(e_table.elementTextTrim("Name"));
             String tableName  = e_table.elementTextTrim("Code");
             modelBean.setTableName(tableName);
 
@@ -86,8 +82,8 @@ public class PdmModelProvider implements ModelProvider{
                 try {
                     String pkID = e_col.attributeValue("Id");
                     col.setDefaultValue(e_col.elementTextTrim("DefaultValue"));
-                    col.setName(e_col.elementTextTrim("Name"));
-                    col.setFieldNameByDbCode(e_col.elementTextTrim("Code"));
+                    col.setLabel(e_col.elementTextTrim("Name"));
+                    col.setName(getFieldNameByDbCode(e_col.elementTextTrim("Code")));
                     String dataType = e_col.elementTextTrim("DataType");
 
                     ModelFieldType  modelFieldType = ModelFieldType.getByDateType(dataType);
@@ -119,6 +115,15 @@ public class PdmModelProvider implements ModelProvider{
             System.out.println();
         }
         return modelBeansMap;
+    }
+
+    public String getFieldNameByDbCode(String code){
+        String[] items = code.split("\\_");
+        String fieldName=items[0];
+        for (int i=1;i<items.length;i++){
+            fieldName = fieldName+items[i].substring(0,1).toUpperCase()+items[i].substring(1);
+        }
+        return fieldName;
     }
 
     private String getClassName(String tableName) {

@@ -1,14 +1,21 @@
 package com.cmbc.codegenerator;
 
-import ch.ralscha.extdirectspring.generator.*;
-import ch.ralscha.extdirectspring.generator.association.AbstractAssociation;
+
+import ch.ralscha.extdirectspring.generator.ModelType;
+import com.cmbc.codegenerator.annotation.EntityGen;
+
+import com.cmbc.codegenerator.annotation.FieldGen;
+import com.cmbc.codegenerator.annotation.InputType;
 import com.cmbc.codegenerator.model.ModelBean;
 import com.cmbc.codegenerator.model.ModelFieldBean;
+import com.cmbc.entity.Department;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
+import javax.persistence.Id;
+import javax.validation.constraints.Size;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -41,43 +48,26 @@ public class EntityModelProvider implements ModelProvider {
 
         Assert.notNull(entity, "entity must not be null");
 
-        Model modelAnnotation = entity.getAnnotation(Model.class);
+
+
+
 
         final ModelBean model = new ModelBean();
 
-        //获取extjs的模型对象名
-        if (modelAnnotation != null && StringUtils.hasText(modelAnnotation.value())) {
-            model.setName(modelAnnotation.value());
+        model.setClassName(entity.getSimpleName());
+        model.setImportName(entity.getName());
+        model.setPackageName(entity.getPackage().getName());
+        model.setDefaultInstance(entity.getSimpleName().substring(0,1).toLowerCase()+entity.getSimpleName().substring(1));
+
+
+        EntityGen entityGenAnnotation = entity.getAnnotation(EntityGen.class);
+        if (entityGenAnnotation != null && StringUtils.hasText(entityGenAnnotation.label())) {
+            model.setLabel(entityGenAnnotation.label());
         } else {
-            model.setName(entity.getName());
+            model.setLabel(entity.getSimpleName());
         }
-        entity.getName()
 
-        if (modelAnnotation != null) {
-            model.setIdProperty(modelAnnotation.idProperty());
-            model.setPaging(modelAnnotation.paging());
-            model.setDisablePagingParameters(modelAnnotation.disablePagingParameters());
 
-            if (StringUtils.hasText(modelAnnotation.createMethod())) {
-                model.setCreateMethod(modelAnnotation.createMethod());
-            }
-
-            if (StringUtils.hasText(modelAnnotation.readMethod())) {
-                model.setReadMethod(modelAnnotation.readMethod());
-            }
-
-            if (StringUtils.hasText(modelAnnotation.updateMethod())) {
-                model.setUpdateMethod(modelAnnotation.updateMethod());
-            }
-
-            if (StringUtils.hasText(modelAnnotation.destroyMethod())) {
-                model.setDestroyMethod(modelAnnotation.destroyMethod());
-            }
-
-            if (StringUtils.hasText(modelAnnotation.messageProperty())) {
-                model.setMessageProperty(modelAnnotation.messageProperty());
-            }
-        }
         //可读属性名称列表
         final Set<String> hasReadMethod = new HashSet<String>();
 
@@ -94,8 +84,7 @@ public class EntityModelProvider implements ModelProvider {
             }
         }
 
-        final List<com.cmbc.codegenerator.model.ModelFieldBean> modelFields = new ArrayList<ModelFieldBean>();
-        final List<AbstractAssociation> associations = new ArrayList<AbstractAssociation>();
+        final List<ModelFieldBean> modelFields = new ArrayList<ModelFieldBean>();
 
         ReflectionUtils.doWithFields(entity, new ReflectionUtils.FieldCallback() {
             private final Set<String> fields = new HashSet<String>();
@@ -103,118 +92,52 @@ public class EntityModelProvider implements ModelProvider {
             @Override
             public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
                 if (fields.contains(field.getName())) return;
-                if (field.getAnnotation(ModelField.class) != null
-                        || field.getAnnotation(ModelAssociation.class) != null ||
-                        ((Modifier.isPublic(field.getModifiers()) || hasReadMethod.contains(field.getName()))
-                                && field.getAnnotation(JsonIgnore.class) == null)) {
-
+                //只有配置了FiledGen的属性才能生成界面元素
+                if (field.getAnnotation(FieldGen.class) != null || field.getAnnotation(Id.class) != null ) {
                     // ignore superclass declarations of fields already found in
                     // a subclass
                     fields.add(field.getName());
 
-                    Class<?> javaType = field.getType();
+                    ModelFieldBean modelFieldBean = new ModelFieldBean();
 
-                    ModelType modelType = null;
-                    for (ModelType mt : ModelType.values()) {
-                        if (mt.supports(javaType)) {
-                            modelType = mt;
-                            break;
+                    modelFieldBean.setName(field.getName());
+
+                    //@FieldGen
+                    FieldGen fieldGenAnnotation = field.getAnnotation(FieldGen.class);
+                    if(fieldGenAnnotation != null){
+                        modelFieldBean.setLabel(fieldGenAnnotation.label());
+                        //输入框类型
+                        if (fieldGenAnnotation.inputType()!=null){
+                            modelFieldBean.setInputType(fieldGenAnnotation.inputType());
+                        }else {
+                            Class<?> javaType = field.getType();
+                            modelFieldBean.setInputType(InputType.getDefaultInputType(javaType));
                         }
-                    }
-
-                    com.cmbc.codegenerator.model.ModelFieldBean modelFieldBean = null;
-
-                    ModelField modelFieldAnnotation = field.getAnnotation(ModelField.class);
-                    if (modelFieldAnnotation != null) {
-
-                        String name;
-                        if (StringUtils.hasText(modelFieldAnnotation.value())) {
-                            name = modelFieldAnnotation.value();
-                        } else {
-                            name = field.getName();
-                        }
-
-                        ModelType type;
-                        if (modelFieldAnnotation.type() != ModelType.AUTO) {
-                            type = modelFieldAnnotation.type();
-                        } else {
-                            if (modelType != null) {
-                                type = modelType;
-                            } else {
-                                type = ModelType.AUTO;
+                        if (modelFieldBean.getInputType().equals(InputType.DATE)){
+                            if(fieldGenAnnotation.dateFormat()!=null){
+                                modelFieldBean.setDateFormat(fieldGenAnnotation.dateFormat());
+                            }else {
+                                modelFieldBean.setDateFormat(Config.getInstance().getDefaultDateFormat());
                             }
                         }
-
-                        modelFieldBean = new com.cmbc.codegenerator.model.ModelFieldBean(name, type);
-
-                        if (StringUtils.hasText(modelFieldAnnotation.dateFormat()) && type == ModelType.DATE) {
-                            modelFieldBean.setDateFormat(modelFieldAnnotation.dateFormat());
-                        }
-
-                        String defaultValue = modelFieldAnnotation.defaultValue();
-                        if (StringUtils.hasText(defaultValue)) {
-                            if (ModelField.DEFAULTVALUE_UNDEFINED.equals(defaultValue)) {
-                                modelFieldBean.setDefaultValue(ModelField.DEFAULTVALUE_UNDEFINED);
-                            } else {
-                                if (type == ModelType.BOOLEAN) {
-                                    modelFieldBean.setDefaultValue(Boolean.parseBoolean(defaultValue));
-                                } else if (type == ModelType.INTEGER) {
-                                    modelFieldBean.setDefaultValue(Long.valueOf(defaultValue));
-                                } else if (type == ModelType.FLOAT) {
-                                    modelFieldBean.setDefaultValue(Double.valueOf(defaultValue));
-                                } else {
-                                    modelFieldBean.setDefaultValue("\"" + defaultValue + "\"");
-                                }
-                            }
-                        }
-
-                        if (modelFieldAnnotation.useNull()
-                                && (type == ModelType.INTEGER || type == ModelType.FLOAT || type == ModelType.STRING || type == ModelType.BOOLEAN)) {
-                            modelFieldBean.setUseNull(true);
-                        }
-
-                        if (StringUtils.hasText(modelFieldAnnotation.mapping())) {
-                            modelFieldBean.setMapping(modelFieldAnnotation.mapping());
-                        }
-
-                        if (!modelFieldAnnotation.persist()) {
-                            modelFieldBean.setPersist(modelFieldAnnotation.persist());
-                        }
-
-                        if (StringUtils.hasText(modelFieldAnnotation.convert())) {
-                            modelFieldBean.setConvert(modelFieldAnnotation.convert());
-                        }
-
-                        modelFields.add(modelFieldBean);
-                    } else {
-                        if (modelType != null) {
-                            modelFieldBean = new com.cmbc.codegenerator.model.ModelFieldBean(field.getName(), modelType);
-                            modelFields.add(modelFieldBean);
-                        }
                     }
 
-                  /*  ModelAssociation modelAssociationAnnotation = field.getAnnotation(ModelAssociation.class);
-                    if (modelAssociationAnnotation != null) {
-                        associations.add(AbstractAssociation
-                                .createAssociation(modelAssociationAnnotation, model, field));
+                    //@Size
+                    Size size = field.getAnnotation(Size.class);
+                   if(size!=null && size.max()!=2147483647){
+                       modelFieldBean.setMax(size.max());
+                   }
+                    if(size!=null && size.min()!=0){
+                        modelFieldBean.setMin(size.min());
                     }
 
-                    if (modelFieldBean != null && outputConfig.getIncludeValidation() != IncludeValidation.NONE) {
-                        Annotation[] fieldAnnotations = field.getAnnotations();
-
-                        for (Annotation fieldAnnotation : fieldAnnotations) {
-                            AbstractValidation.addValidationToModel(model, modelFieldBean, fieldAnnotation,
-                                    outputConfig.getIncludeValidation());
-                        }
-                    }*/
-
+                     modelFields.add(modelFieldBean);
                 }
             }
 
         });
 
         model.addFields(modelFields);
-        model.addAssociations(associations);
         return model;
     }
 
@@ -224,5 +147,11 @@ public class EntityModelProvider implements ModelProvider {
 
     public void setEntity(Class<?> entity) {
         this.entity = entity;
+    }
+    public static void main(String[] args){
+        System.out.println(Department.class.getCanonicalName());
+        System.out.println(Department.class.getName());
+        System.out.println(Department.class.getSimpleName());
+        System.out.println(Department.class.getPackage().getName());
     }
 }

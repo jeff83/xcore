@@ -35,17 +35,27 @@ public class ModelBean {
      */
     private String className;
     /**
-     * 实体类包名
+     * 包名
      */
     private String packageName;
 
-    private String lowerClassName;
+    /**
+     * 全名
+     */
+    private String importName;
+    /**
+     * 默认实例化的名称
+     */
+    private String defaultInstance;
 
     /**
-     * 中文字段名
+     * 中文实体名
      */
-    private String name;
+    private String label;
 
+    /**
+     * 表名
+     */
     private String  tableName;
 
 	private String idProperty;
@@ -70,8 +80,8 @@ public class ModelBean {
 
 	private String messageProperty;
 
-	public String getName() {
-		return name;
+	public String getLabel() {
+		return label;
 	}
 
 	/**
@@ -79,10 +89,10 @@ public class ModelBean {
 	 * href="http://docs.sencha.com/ext-js/4-2/#!/api/Ext.data.Model"
 	 * >Ext.data.Model</a>.
 	 * 
-	 * @param name new name for the model object
+	 * @param label new name for the model object
 	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setLabel(String label) {
+		this.label = label;
 	}
 
 	public String getIdProperty() {
@@ -365,5 +375,38 @@ public class ModelBean {
 
     public void setTableName(String tableName) {
         this.tableName = tableName;
+    }
+
+    /**
+     * 实体类包名
+     */
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
+    /**
+     * 全名
+     */
+    public String getImportName() {
+        return importName;
+    }
+
+    public void setImportName(String importName) {
+        this.importName = importName;
+    }
+
+    /**
+     * 默认实例化的名称
+     */
+    public String getDefaultInstance() {
+        return defaultInstance;
+    }
+
+    public void setDefaultInstance(String defaultInstance) {
+        this.defaultInstance = defaultInstance;
     }
 }

@@ -27,9 +27,16 @@ public class Config {
 
     private String[] tableNamePrefixs = new String[]{"rbac_","wf_"};
 
-    private String defaultEncoding = "UTF-8";
+
 
     private ModelProvider modelProvider;
+
+    private String defaultEncoding = "UTF-8";
+
+    /**
+     * 该默认值 与@FieldGen中的dateFormat有影响
+     */
+    private String defaultDateFormat = "yyyy-MM-dd";
 
     public static Config getInstance(){
         if(instance==null){
@@ -141,5 +148,13 @@ public class Config {
 
     public void setModelProvider(ModelProvider modelProvider) {
         this.modelProvider = modelProvider;
+    }
+
+    public String getDefaultDateFormat() {
+        return defaultDateFormat;
+    }
+
+    public void setDefaultDateFormat(String defaultDateFormat) {
+        this.defaultDateFormat = defaultDateFormat;
     }
 }

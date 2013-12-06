@@ -2,6 +2,7 @@ package com.cmbc.entity;
 
 import ch.ralscha.extdirectspring.generator.Model;
 import ch.rasc.edsutil.entity.AbstractPersistable;
+import com.cmbc.codegenerator.annotation.EntityGen;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.Column;
@@ -9,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
+@EntityGen(label = "部门")
 @Entity
 @Table(name = "Department")
 @Model(value = "xcore.model.Department", readMethod = "departmentService.read", createMethod = "departmentService.create", updateMethod = "departmentService.update", destroyMethod = "departmentService.destroy", paging = true)

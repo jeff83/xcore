@@ -16,6 +16,7 @@
 package com.cmbc.codegenerator.model;
 
 import ch.ralscha.extdirectspring.generator.ModelType;
+import com.cmbc.codegenerator.annotation.InputType;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonRawValue;
@@ -34,27 +35,33 @@ import java.io.IOException;
 public class ModelFieldBean {
 
 
-    /**
-     * 中文字段名
-     */
-	private String name;
+    private String label;
+
 
     /**
      * entity实体类属性名，需要去掉"_",换成camel写法
      *  property
      */
-    private String fieldName;
+    private String name;
 
-    private String code;
 
     private boolean pkFlag;
+
+    /**
+     * 界面前端输入框的类型
+     */
+    private InputType inputType;
 
     /**
      * 转成java的类型
      */
 	private ModelFieldType type;
 
-    private Integer length;
+    private Integer max;
+
+    private Integer min;
+
+
 
 	@JsonRawValue
 	private Object defaultValue;
@@ -78,18 +85,6 @@ public class ModelFieldBean {
     public ModelFieldBean() {
     }
 
-    public ModelFieldBean(String name, ModelType type) {
-        //To change body of created methods use File | Settings | File Templates.
-    }
-
-
-    public void setFieldNameByDbCode(String code){
-        String[] items = code.split("\\_");
-        this.fieldName=items[0];
-        for (int i=1;i<items.length;i++){
-            this.fieldName = this.fieldName+items[i].substring(0,1).toUpperCase()+items[i].substring(1);
-        }
-    }
 
 	public String getName() {
 		return name;
@@ -234,24 +229,7 @@ public class ModelFieldBean {
 		this.convert = convert;
 	}
 
-    public Integer getLength() {
-        return length;
-    }
 
-    public void setLength(Integer length) {
-        this.length = length;
-    }
-
-    /**
-     * 表字段名
-     */
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
 
     public boolean isPkFlag() {
         return pkFlag;
@@ -259,6 +237,41 @@ public class ModelFieldBean {
 
     public void setPkFlag(boolean pkFlag) {
         this.pkFlag = pkFlag;
+    }
+
+    /**
+     * 中文字段名
+     */
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public InputType getInputType() {
+        return inputType;
+    }
+
+    public void setInputType(InputType inputType) {
+        this.inputType = inputType;
+    }
+
+    public Integer getMax() {
+        return max;
+    }
+
+    public void setMax(Integer max) {
+        this.max = max;
+    }
+
+    public Integer getMin() {
+        return min;
+    }
+
+    public void setMin(Integer min) {
+        this.min = min;
     }
 
     private final static class ModelTypeSerializer extends JsonSerializer<ModelType> {

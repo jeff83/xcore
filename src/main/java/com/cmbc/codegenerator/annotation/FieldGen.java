@@ -14,7 +14,7 @@ import static javax.persistence.FetchType.LAZY;
  */
 @Target({METHOD, FIELD})
 @Retention(RUNTIME)
-public @interface Field {
+public @interface FieldGen {
     /**
      * 字段的展示名
      * @return
@@ -38,5 +38,7 @@ public @interface Field {
      * @return
      */
     boolean required() default false;
+
+    String dateFormat() ;
 
 }
