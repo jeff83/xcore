@@ -51,7 +51,7 @@ public class EntityModelProvider implements ModelProvider {
         } else {
             model.setName(entity.getName());
         }
-        entity.getName()
+       // entity.getName()
 
         if (modelAnnotation != null) {
             model.setIdProperty(modelAnnotation.idProperty());
