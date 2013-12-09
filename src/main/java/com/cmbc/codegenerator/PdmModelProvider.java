@@ -88,7 +88,7 @@ public class PdmModelProvider implements ModelProvider{
 
                     ModelFieldType  modelFieldType = ModelFieldType.getByDateType(dataType);
                     col.setType(modelFieldType);
-                    col.setLength(e_col.elementTextTrim("Length") == null ? null : Integer.parseInt(e_col.elementTextTrim("Length")));
+                    col.setMax(e_col.elementTextTrim("Length") == null ? null : Integer.parseInt(e_col.elementTextTrim("Length")));
                     if(e_table.element("Keys")!=null){
                         String keys_key_id = e_table.element("Keys").element("Key").attributeValue("Id");
                         String keys_column_ref = e_table.element("Keys").element("Key").element("Key.Columns")
@@ -97,7 +97,7 @@ public class PdmModelProvider implements ModelProvider{
 
                         if (keys_primarykey_ref_id.equals(keys_key_id) && keys_column_ref.equals(pkID)) {
                             col.setPkFlag(true);
-                            modelBean.setIdProperty(col.getCode());
+                            modelBean.setIdProperty(col.getName());
                         }
 
                     }

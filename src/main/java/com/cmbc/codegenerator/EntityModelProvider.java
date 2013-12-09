@@ -148,10 +148,5 @@ public class EntityModelProvider implements ModelProvider {
     public void setEntity(Class<?> entity) {
         this.entity = entity;
     }
-    public static void main(String[] args){
-        System.out.println(Department.class.getCanonicalName());
-        System.out.println(Department.class.getName());
-        System.out.println(Department.class.getSimpleName());
-        System.out.println(Department.class.getPackage().getName());
-    }
+
 }

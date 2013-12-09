@@ -35,6 +35,9 @@ import com.mysema.query.SearchResults;
 import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.jpa.impl.JPAQuery;
 
+import ${model.importName};
+import ${model.packageName}.Q${model.className};
+
 @Service
 @Lazy
 @PreAuthorize("hasRole('ADMIN')")
