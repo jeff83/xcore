@@ -1,11 +1,23 @@
 package com.cmbc.service;
 
-import static ch.ralscha.extdirectspring.annotation.ExtDirectMethodType.STORE_READ;
-
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
+import ch.ralscha.extdirectspring.annotation.ExtDirectMethod;
+import ch.ralscha.extdirectspring.bean.ExtDirectStoreReadRequest;
+import ch.ralscha.extdirectspring.bean.ExtDirectStoreResult;
+import ch.ralscha.extdirectspring.filter.StringFilter;
+import ch.rasc.edsutil.BaseCRUDService;
+import ch.rasc.edsutil.QueryUtil;
+import ch.rasc.edsutil.bean.ExtDirectStoreValidationResult;
+import ch.rasc.edsutil.bean.ValidationError;
+import com.cmbc.entity.QUser;
+import com.cmbc.entity.Role;
+import com.cmbc.entity.User;
+import com.cmbc.security.JpaUserDetails;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+import com.mysema.query.BooleanBuilder;
+import com.mysema.query.SearchResults;
+import com.mysema.query.jpa.JPQLQuery;
+import com.mysema.query.jpa.impl.JPAQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Lazy;
@@ -16,25 +28,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import ch.ralscha.extdirectspring.annotation.ExtDirectMethod;
-import ch.ralscha.extdirectspring.bean.ExtDirectStoreReadRequest;
-import ch.ralscha.extdirectspring.bean.ExtDirectStoreResult;
-import ch.ralscha.extdirectspring.filter.StringFilter;
-import com.cmbc.entity.QUser;
-import com.cmbc.entity.Role;
-import com.cmbc.entity.User;
-import com.cmbc.security.JpaUserDetails;
-import ch.rasc.edsutil.BaseCRUDService;
-import ch.rasc.edsutil.QueryUtil;
-import ch.rasc.edsutil.bean.ExtDirectStoreValidationResult;
-import ch.rasc.edsutil.bean.ValidationError;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import com.mysema.query.BooleanBuilder;
-import com.mysema.query.SearchResults;
-import com.mysema.query.jpa.JPQLQuery;
-import com.mysema.query.jpa.impl.JPAQuery;
+import static ch.ralscha.extdirectspring.annotation.ExtDirectMethodType.STORE_READ;
 
 @Service
 @Lazy
@@ -166,6 +164,10 @@ public class UserService extends BaseCRUDService<User> {
 			entity.setPasswordHash(passwordEncoder.encode(entity.getPasswordNew()));
 		} else {
 			if (entity.getId() != null) {
+                //由于User对象的passwordHash属性被设置成@JsonIgnore，送到前台页面的值中，没有该属性的值，
+                // 所以从前台返回的值生成的User对象中也没有该属性值。必须通过手工录入的方式进行创建。
+                //后台不知道前台界面的内容，无法根据前台内容过滤entity中的属性,所以JPA与JSF直接是绝配。而硬是要使用AJAX与JSF就有点为难了？
+                //ajax与jpa有没有好的结合方案。
 				String dbPassword = new JPAQuery(entityManager).from(QUser.user)
 						.where(QUser.user.id.eq(entity.getId())).singleResult(QUser.user.passwordHash);
 				entity.setPasswordHash(dbPassword);
