@@ -51,6 +51,7 @@ Ext.define('xcore.App', {
 			}
 		});
 
+        //deft 可以被注入的实体的依赖配置，相当于spring的applicationContext.xml
 		Deft.Injector.configure({
 			messageBus: 'Ext.util.Observable',
 			rolesStore: {

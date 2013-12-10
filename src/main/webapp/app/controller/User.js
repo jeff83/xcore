@@ -6,6 +6,7 @@ Ext.define('xcore.controller.User', {
 		exportButton: true
 	},
 
+    //删除时提示信息回调函数
 	destroyConfirmMsg: function(record) {
 		return record.get('userName') + ' ' + i18n.reallyDestroy;
 	},

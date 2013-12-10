@@ -21,6 +21,7 @@ Ext.define('xcore.controller.CrudBase', {
 	},
 
 	constructor: function() {
+        //将control属性的所有值，merge入父对象的control属性中。
 		if (!Ext.Object.equals(this.control, this.superclass.control)) {
 			var toBeDeleted = [];
 			var i;
@@ -42,6 +43,7 @@ Ext.define('xcore.controller.CrudBase', {
 	},
 
 	init: function() {
+        //getView如何获得view对象,view 创建controller对象，同时传入了view的引用。
 		var store = this.getView().getStore();
 		store.clearFilter(true);
 		store.load();
