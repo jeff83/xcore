@@ -1,6 +1,6 @@
 Ext.define('xcore.controller.CrudBase', {
 	extend: 'Deft.mvc.ViewController',
-	control: {
+	control: { //使用什么方式，选择中界面组件，类型还是id,  实现采用Ext.ComponentQueryView，也可以是"'useredit button[action=save]':
 		view: {
 			removed: 'onRemoved',
 			itemdblclick: 'onItemDblClick',
@@ -61,6 +61,7 @@ Ext.define('xcore.controller.CrudBase', {
 		this.showContextMenu(record, e.getXY());
 	},
 
+    //当操作列被点击时的处理
 	onActionColumnClick: function(grid, rowIndex, colIndex, item, e, record, row) {
 		this.showContextMenu(record, null, row);
 	},
@@ -88,11 +89,11 @@ Ext.define('xcore.controller.CrudBase', {
 	onRemoved: function() {
 		History.pushState({}, i18n.app_title, "?");
 	},
-
+    //修改
 	onItemDblClick: function(grid, record) {
 		this.editObject(record);
 	},
-
+    //新建
 	onCreateButtonClick: function() {
 		this.editObject();
 	},
@@ -104,7 +105,7 @@ Ext.define('xcore.controller.CrudBase', {
 
 		var form = editWindow.down('form');
 		if (record) {
-			form.loadRecord(record);
+			form.loadRecord(record); //从一个model中加载form中的数据，保存时，也保存到这个record对象上
 		} else {
 			form.loadRecord(this.createModel());
 		}
@@ -160,23 +161,25 @@ Ext.define('xcore.controller.CrudBase', {
 
 	onEditFormSaveButtonClick: function(button) {
 		var me = this;
-		var win = button.up('window');
-		var form = win.down('form');
+		var win = button.up('window'); //查找父层级中的window组件
+		var form = win.down('form');  //查询window组件下的form对象
 		var store = this.getView().getStore();
 
+        //Persists the values in this form into the passed Ext.data.Model  将数据更新到原来加载的model对象上。
+        // form.loadRecord(record);
 		form.updateRecord();
 		var record = form.getRecord();
-
+        //判断数据model是否被更改了
 		if (!record.dirty) {
 			win.close();
 			return;
 		}
-
+        //在数据库中没有存储
 		if (record.phantom) {
-			store.rejectChanges();
-			store.add(record);
+			store.rejectChanges(); //拒绝掉对store中原有数据的所有本地修改，以便增加新的修改，并与后台同步。
+			store.add(record); //此时有没有http请求呢
 		}
-
+        //同步store,发生相应的后台操作。这种处理，不用重新全量分页查一次列表数据。
 		store.sync({
 			success: function(records, operation) {
 				xcore.ux.window.Notification.info(i18n.successful, me.successfulSaveMsg);
@@ -216,16 +219,17 @@ Ext.define('xcore.controller.CrudBase', {
 
 	createModel: Ext.emptyFn,
 
+    //构建列表的右键，默认包括三个菜单项
 	buildContextMenuItems: function(record) {
 
 		return [ {
 			text: i18n.edit,
 			hidden: this.isReadonly(record),
 			glyph: 0xe803,
-			handler: Ext.bind(this.editObject, this, [ record ])
+			handler: Ext.bind(this.editObject, this, [ record ])// Ext.bind 构建一个函数的闭包
 		}, {
 			text: i18n.show,
-			hidden: !this.isReadonly(record),
+			hidden: !this.isReadonly(record),// 非只读下不展示
 			glyph: 0xe817,
 			handler: Ext.bind(this.editObject, this, [ record ])
 		}, {
