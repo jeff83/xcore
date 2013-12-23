@@ -3,6 +3,7 @@ package com.cmbc.service;
 import ch.ralscha.extdirectspring.annotation.ExtDirectMethod;
 import ch.ralscha.extdirectspring.bean.ExtDirectStoreReadRequest;
 import ch.ralscha.extdirectspring.bean.ExtDirectStoreResult;
+import ch.ralscha.extdirectspring.filter.Filter;
 import ch.ralscha.extdirectspring.filter.StringFilter;
 import ch.rasc.edsutil.BaseCRUDService;
 import ch.rasc.edsutil.QueryUtil;
@@ -28,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -52,14 +54,24 @@ public class UserService extends BaseCRUDService<User> {
 
 		JPQLQuery query = new JPAQuery(entityManager).from(QUser.user);
 		if (!request.getFilters().isEmpty()) {
-			StringFilter filter = (StringFilter) request.getFilters().iterator().next();
-
-			BooleanBuilder bb = new BooleanBuilder();
-			bb.or(QUser.user.userName.contains(filter.getValue()));
-			bb.or(QUser.user.name.contains(filter.getValue()));
-			bb.or(QUser.user.firstName.contains(filter.getValue()));
-			bb.or(QUser.user.email.contains(filter.getValue()));
-
+            BooleanBuilder bb = new BooleanBuilder();
+            Iterator<Filter> it = request.getFilters().iterator();
+            while (it.hasNext()){
+                StringFilter filter = (StringFilter) it.next();
+                System.out.println(filter.getField()+":"+filter.getValue());;
+                if(QUser.user.userName.getMetadata().getName().equals(filter.getField())){
+                    bb.and(QUser.user.userName.contains(filter.getValue()));
+                }
+                if(QUser.user.name.getMetadata().getName().equals(filter.getField())){
+                    bb.and(QUser.user.name.contains(filter.getValue()));
+                }
+                if(QUser.user.firstName.getMetadata().getName().equals(filter.getField())){
+                    bb.and(QUser.user.firstName.contains(filter.getValue()));
+                }
+                if(QUser.user.email.getMetadata().getName().equals(filter.getField())){
+                    bb.and(QUser.user.email.contains(filter.getValue()));
+                }
+            }
 			query.where(bb);
 		}
 

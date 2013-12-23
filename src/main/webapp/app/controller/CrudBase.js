@@ -17,7 +17,11 @@ Ext.define('xcore.controller.CrudBase', {
 		},
 		filterField: {
 			filter: 'onFilterField'
-		}
+		},
+        searchButton:{
+            click: 'onSearchButtonClick'
+        }
+
 	},
 
 	constructor: function() {
@@ -85,6 +89,34 @@ Ext.define('xcore.controller.CrudBase', {
 			this.actionMenu.showBy(item);
 		}
 	},
+
+    onSearchButtonClick:function(button){
+        var me = this;
+        var form = button.up('form'); //查找父层级中的window组件
+        var values = form.getValues();
+        var store = this.getView().getStore();
+        if (values) {
+            store.clearFilter(true);
+            store.filter(
+                [   {
+                        property: 'userName',
+                        value   : values.userName
+                    },
+                    {
+                        property: 'firstName',
+                        value   : values.firstName
+                    },
+                    {
+                        property: 'name',
+                        value   : values.name
+                    }
+                ]);
+        } else {
+            store.clearFilter();
+        }
+
+
+    },
 
 	onRemoved: function() {
 		History.pushState({}, i18n.app_title, "?");

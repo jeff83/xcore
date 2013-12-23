@@ -13,7 +13,8 @@ Ext.define('xcore.view.user.List', {
 
 		me.store = Ext.create('xcore.store.Users');
 
-		me.columns = [ {
+		me.columns = [
+        {
 			xtype: 'actioncolumn',
 			width: 30,
 			items: [ {
@@ -51,7 +52,8 @@ Ext.define('xcore.view.user.List', {
 			}
 		} ];
 
-		me.dockedItems = [{
+		me.dockedItems = [
+            { // //表格的第一部分，包括查询条件和工具栏
             xtype:'panel',
             dock: 'top',
             width:'100%',
@@ -79,21 +81,17 @@ Ext.define('xcore.view.user.List', {
                     items: [ {
                         name: 'userName',
                         itemId: 'userNameTextField222',
-                        fieldLabel: i18n.user_username,
-                        allowBlank: false
+                        fieldLabel: i18n.user_username
                     }, {
                         name: 'firstName',
-                        fieldLabel: i18n.user_firstname,
-                        allowBlank: false
+                        fieldLabel: i18n.user_firstname
                     }, {
                         name: 'name',
-                        fieldLabel: i18n.user_lastname,
-                        allowBlank: false
+                        fieldLabel: i18n.user_lastname
                     }, {
                         name: 'email',
                         fieldLabel: i18n.user_email,
-                        vtype: 'email',
-                        allowBlank: false
+                        vtype: 'email'
                     }, {
                         xtype: 'combobox',
                         fieldLabel: i18n.user_language,
@@ -106,7 +104,6 @@ Ext.define('xcore.view.user.List', {
                         displayField: 'language',
                         queryMode: 'local',
                         emptyText: i18n.user_selectlanguage,
-                        allowBlank: false,
                         forceSelection: true
                     }, {
                         fieldLabel: i18n.user_enabled,
@@ -117,15 +114,16 @@ Ext.define('xcore.view.user.List', {
                     }],
                     rbar: [ {
                         xtype: 'button',
-                        itemId: 'editFormSaveButton222',
-                        text: i18n.save,
-                        action: 'save',
+                        itemId: 'searchButton',
+                        text: "查询",
+                        action: 'search',
                         glyph: 0xe80d,
                         formBind: true
                     }, {
-                        text: i18n.cancel,
-                        scope: me,
-                        handler: me.close,
+                        text: "重置",
+                        handler: function() {
+                            this.up('form').getForm().reset();
+                        },
                         glyph: 0xe80e
                     } ]
                 },
@@ -163,7 +161,8 @@ Ext.define('xcore.view.user.List', {
 
             ]
 
-        }, {
+        },
+        {  //表格的第二部分，分页工具条
 			xtype: 'pagingtoolbar',
 			dock: 'bottom',
 			store: me.store
